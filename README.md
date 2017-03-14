@@ -22,3 +22,15 @@ Clone the project:
 ```bash
 go get github.com/miroufff/IotMqtt
 ```
+
+Change Ip in commonvariables.go:
+```bash
+var IpServ string = "0.0.0.0"
+```
+
+## Usage
+
+Run:
+```bash
+go run main.go
+```
