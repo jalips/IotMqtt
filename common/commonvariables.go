@@ -1,4 +1,5 @@
 package common
 
-var IpApiServ string = "10.3.3.81"
-var IpMosquitoServ  string = IpApiServ
+var IpServ string = "0.0.0.0"
+var IpApiServ string = IpServ + ":8000"
+var IpMosquitoServ string = IpServ + ":1883"

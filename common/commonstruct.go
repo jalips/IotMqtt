@@ -7,7 +7,6 @@ type SensorData struct {
 	Value string `json:"value"`
 }
 
-
 type Sensor struct {
 	DisplayName string `json:"displayname"`
 	Vendor string `json:"vendor"`

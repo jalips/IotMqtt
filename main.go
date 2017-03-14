@@ -5,13 +5,18 @@ import (
 	"os"
 	"os/signal"
 	"encoding/json"
-
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
 	"./common"
+	"time"
 )
 
+/**
+Listen mqtt messages and push to the IotSymfonyApi
+
+TODO : Get the uuid of the sensor
+ */
 func main() {
 	// Set up channel on which to send signal notifications.
 	sigc := make(chan os.Signal, 1)
@@ -31,7 +36,7 @@ func main() {
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
-		Address: common.IpMosquitoServ + ":1883",
+		Address: common.IpMosquitoServ,
 		ClientID: []byte("vm-client"),
 	})
 	if err != nil {
@@ -42,7 +47,7 @@ func main() {
 	err = cli.Subscribe(&client.SubscribeOptions{
 		SubReqs: []*client.SubReq{
 			&client.SubReq{
-				TopicFilter: []byte("temp"),
+				TopicFilter: []byte("/temperature"),
 				QoS:         mqtt.QoS0,
 				// Define the processing of the message handler.
 				Handler: sensorDataHandler,
@@ -59,7 +64,7 @@ func main() {
 	// Unsubscribe from topics.
 	err = cli.Unsubscribe(&client.UnsubscribeOptions{
 		TopicFilters: [][]byte{
-			[]byte("temp"),
+			[]byte("/temperature"),
 		},
 	})
 	if err != nil {
@@ -71,29 +76,34 @@ func main() {
 		panic(err)
 	}
 }
-func sensorDataHandler(topicName, message []byte) {
 
+func sensorDataHandler(topicName, message []byte) {
 	fmt.Println(string(topicName), string(message))
-	if (string(topicName) != "temp") {
-		panic("pas le bon message")
+
+	// If the message publish on the good topic
+	if (string(topicName) != "/temperature") {
+		panic("wrong message")
 	}
 
-	data := &common.SensorData{}
-	err := json.Unmarshal(message, data)
-	if err != nil {
-		fmt.Println(err)
-		return
+	data := &common.SensorData{
+		SensorName:  "c10d2fc4-9361-4c24-91f4-c355379cbf44",
+		Measurement: "temp",
+		Time:        time.Now().UnixNano(),
+		Value:       string(message),
 	}
 
 	jsonitem, err := json.Marshal(data)
+
+	fmt.Println(string(jsonitem))
 	if err != nil {
 		fmt.Println(err)
 		return
 	}
 
+	// Post request to IotApi api
 	request := goreq.Request{
 		Method: "POST",
-		Uri: "http://" + common.IpApiServ + "/cloud_api/web/app_dev.php/api/datasensors?sender=go",
+		Uri: "http://" + common.IpApiServ + "/api/datasensors?sender=go",
 		Accept: "application/json",
 		ContentType: "application/json",
 		UserAgent: "goreq",
