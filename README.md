@@ -15,3 +15,10 @@ A Go project created on February 21, 2017.
 * Go 1.7
 * [yosssi/gmq](https://github.com/yosssi/gmq)
 * [franela/goreq](https://github.com/franela/goreq)
+
+## Install
+
+Clone the project:
+```bash
+go get github.com/miroufff/IotMqtt
+```
