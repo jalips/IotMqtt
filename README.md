@@ -13,6 +13,7 @@ A Go project created on February 21, 2017.
 ## Features
 
 * Go 1.7
+* Mosquitto 1.4
 * [yosssi/gmq](https://github.com/yosssi/gmq)
 * [franela/goreq](https://github.com/franela/goreq)
 
