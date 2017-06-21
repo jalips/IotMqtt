@@ -33,9 +33,6 @@ func main() {
 	// Terminate the Client.
 	cli.Terminate()
 
-	/************************************
-				SENSOR 1
-	*************************************/
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
@@ -46,9 +43,6 @@ func main() {
 		panic(err)
 	}
 
-	/************************************
-				SENSOR 1
-	*************************************/
 	// Subscribe to topics.
 	err = cli.Subscribe(&client.SubscribeOptions{
 		SubReqs: []*client.SubReq{
@@ -58,49 +52,20 @@ func main() {
 				// Define the processing of the message handler.
 				Handler: sensorDataHandlerTemp,
 			},
+			&client.SubReq{
+				TopicFilter: []byte("sensor/hydro"),
+				QoS:         mqtt.QoS1,
+				Handler: sensorDataHandlerHydro,
+			},
 		},
 	})
 	if err != nil {
 		panic(err)
 	}
 
-	/************************************
-				SENSOR 2
-	*************************************/
-	// Connect to the MQTT Server.
-	err2 := cli.Connect(&client.ConnectOptions{
-		Network:  "tcp",
-		Address: common.IpMosquitoServ,
-		ClientID: []byte("vm-client"),
-	})
-	if err2 != nil {
-		panic(err2)
-	}
-
-	/************************************
-				SENSOR 2
-	*************************************/
-	// Subscribe to topics.
-	err2 = cli.Subscribe(&client.SubscribeOptions{
-		SubReqs: []*client.SubReq{
-			&client.SubReq{
-				TopicFilter: []byte("sensor/hydro"),
-				QoS:         mqtt.QoS0,
-				// Define the processing of the message handler.
-				Handler: sensorDataHandlerHydro,
-			},
-		},
-	})
-	if err2 != nil {
-		panic(err2)
-	}
-
 	// Wait for receiving a signal.
 	<-sigc
 
-	/************************************
-				SENSOR 1
-	*************************************/
 	// Unsubscribe from topics.
 	err = cli.Unsubscribe(&client.UnsubscribeOptions{
 		TopicFilters: [][]byte{
@@ -116,22 +81,6 @@ func main() {
 		panic(err)
 	}
 
-	/************************************
-				SENSOR 2
-	*************************************/
-	err2 = cli.Unsubscribe(&client.UnsubscribeOptions{
-		TopicFilters: [][]byte{
-			[]byte("sensor/hydro"),
-		},
-	})
-	if err2 != nil {
-		panic(err2)
-	}
-
-	// Disconnect the Network Connection.
-	if err2 := cli.Disconnect(); err2 != nil {
-		panic(err2)
-	}
 }
 
 func sensorDataHandlerTemp(topicName, message []byte) {
