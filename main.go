@@ -99,10 +99,8 @@ func sensorDataHandler(topicName, message []byte) {
 	*/
 
 	data := &common.SensorData{
-		SensorName:  "c10d2fc4-9361-4c24-91f4-c355379cbf44",
-		Measurement: "temp",
-		Time:        time.Now().UnixNano(),
-		Value:       string(message),
+		data:  string(message),
+		statisticType: "temp",
 	}
 
 	jsonitem, err := json.Marshal(data)
@@ -116,7 +114,7 @@ func sensorDataHandler(topicName, message []byte) {
 	// Post request to IotApi api
 	request := goreq.Request{
 		Method: "POST",
-		Uri: "http://www.mocky.io/v2/5185415ba171ea3a00704eed",
+		Uri: "http://autoyas.jalips-test.fr/app.php/statistics",
 		Accept: "application/json",
 		ContentType: "application/json",
 		UserAgent: "goreq",
