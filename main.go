@@ -8,7 +8,7 @@ import (
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
 	"github.com/jalips/IotMqtt/common"
-	"time"
+	//"time"
 	"encoding/json"
 )
 
@@ -99,8 +99,8 @@ func sensorDataHandler(topicName, message []byte) {
 	*/
 
 	data := &common.SensorData{
-		data:  string(message),
-		statisticType: string(topicName),
+		Data:  string(message),
+		StatisticType: string(topicName),
 	}
 
 	jsonitem, err := json.Marshal(data)
