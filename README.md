@@ -21,12 +21,12 @@ A Go project created on February 21, 2017.
 
 Clone the project:
 ```bash
-go get github.com/miroufff/IotMqtt
+go get github.com/jalips/IotMqtt
 ```
 
 Change Ip in commonvariables.go:
 ```bash
-var IpServ string = "0.0.0.0"
+var IpServ string = "localhost"
 ```
 
 ## Usage
@@ -35,3 +35,6 @@ Run:
 ```bash
 go run main.go
 ```
+
+
+Thanks to Miroufff & tlemaillet
