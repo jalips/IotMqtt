@@ -1,10 +1,8 @@
 package common
 
 type SensorData struct {
-	SensorName string `json:"sensor"`
-	Measurement string `json:"type"`
-	Time int64 `json:"receivedAt"`
-	Value string `json:"value"`
+	data string `json:"data"`
+	statisticType string `json:"type"`
 }
 
 type Sensor struct {

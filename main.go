@@ -100,7 +100,7 @@ func sensorDataHandler(topicName, message []byte) {
 
 	data := &common.SensorData{
 		data:  string(message),
-		statisticType: "temp",
+		statisticType: string(topicName),
 	}
 
 	jsonitem, err := json.Marshal(data)
