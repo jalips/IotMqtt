@@ -47,18 +47,18 @@ func main() {
 	err = cli.Subscribe(&client.SubscribeOptions{
 		SubReqs: []*client.SubReq{
 			&client.SubReq{
-				TopicFilter: []byte("sensor/temp"),
+				TopicFilter: []byte("temp"),
 				QoS:         mqtt.QoS0,
 				// Define the processing of the message handler.
 				Handler: sensorDataHandler,
 			},
 			&client.SubReq{
-				TopicFilter: []byte("sensor/hydro"),
+				TopicFilter: []byte("hydro"),
 				QoS:         mqtt.QoS1,
 				Handler: sensorDataHandler,
 			},
 			&client.SubReq{
-				TopicFilter: []byte("sensor/valve"),
+				TopicFilter: []byte("valve"),
 				QoS:         mqtt.QoS2,
 				Handler: sensorDataHandler,
 			},
@@ -74,7 +74,7 @@ func main() {
 	// Unsubscribe from topics.
 	err = cli.Unsubscribe(&client.UnsubscribeOptions{
 		TopicFilters: [][]byte{
-			[]byte("sensor/temp"),
+			[]byte("temp"),
 		},
 	})
 	if err != nil {
@@ -114,7 +114,7 @@ func sensorDataHandler(topicName, message []byte) {
 	// Post request to IotApi api
 	request := goreq.Request{
 		Method: "POST",
-		Uri: "http://autoyas.jalips-test.fr/app.php/statistics",
+		Uri: "http://autoyas.jalips-test.fr/app.php/statistics/"+string(message)+"/"+string(topicName)+"/new",
 		Accept: "application/json",
 		ContentType: "application/json",
 		UserAgent: "goreq",
