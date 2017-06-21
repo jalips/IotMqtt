@@ -8,7 +8,7 @@ import (
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
-	"github.com/common"
+	"github.com/jalips/IotMqtt/common"
 	//"time"
 )
 
@@ -134,7 +134,7 @@ func main() {
 	}
 }
 
-func sensorDataHandler(topicName, message []byte) {
+func sensorDataHandlerTemp(topicName, message []byte) {
 	fmt.Println(string(topicName), string(message))
 /*
 	// If the message publish on the good topic
@@ -174,4 +174,47 @@ func sensorDataHandler(topicName, message []byte) {
 	fmt.Println(res.Header)
 	fmt.Println(res.Body.ToString())
 */
+}
+
+
+func sensorDataHandlerHydro(topicName, message []byte) {
+	fmt.Println(string(topicName), string(message))
+	/*
+		// If the message publish on the good topic
+		if (string(topicName) != "/temperature") {
+			panic("wrong message")
+		}
+
+		data := &common.SensorData{
+			SensorName:  "c10d2fc4-9361-4c24-91f4-c355379cbf44",
+			Measurement: "temp",
+			Time:        time.Now().UnixNano(),
+			Value:       string(message),
+		}
+
+		jsonitem, err := json.Marshal(data)
+
+		fmt.Println(string(jsonitem))
+		if err != nil {
+			fmt.Println(err)
+			return
+		}
+
+		// Post request to IotApi api
+		request := goreq.Request{
+			Method: "POST",
+			Uri: "http://" + common.IpApiServ + "/api/datasensors?sender=go",
+			Accept: "application/json",
+			ContentType: "application/json",
+			UserAgent: "goreq",
+			Body: string(jsonitem),
+		}
+		res, err := request.Do()
+		if err != nil {
+			panic(err)
+		}
+
+		fmt.Println(res.Header)
+		fmt.Println(res.Body.ToString())
+	*/
 }
