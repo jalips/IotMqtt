@@ -4,12 +4,12 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
-	"encoding/json"
+	//"encoding/json"
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
-	"./common"
-	"time"
+	"github.com/common"
+	//"time"
 )
 
 /**
@@ -33,6 +33,9 @@ func main() {
 	// Terminate the Client.
 	cli.Terminate()
 
+	/************************************
+				SENSOR 1
+	*************************************/
 	// Connect to the MQTT Server.
 	err := cli.Connect(&client.ConnectOptions{
 		Network:  "tcp",
@@ -43,14 +46,17 @@ func main() {
 		panic(err)
 	}
 
+	/************************************
+				SENSOR 1
+	*************************************/
 	// Subscribe to topics.
 	err = cli.Subscribe(&client.SubscribeOptions{
 		SubReqs: []*client.SubReq{
 			&client.SubReq{
-				TopicFilter: []byte("/temperature"),
+				TopicFilter: []byte("sensor/temp"),
 				QoS:         mqtt.QoS0,
 				// Define the processing of the message handler.
-				Handler: sensorDataHandler,
+				Handler: sensorDataHandlerTemp,
 			},
 		},
 	})
@@ -58,13 +64,47 @@ func main() {
 		panic(err)
 	}
 
+	/************************************
+				SENSOR 2
+	*************************************/
+	// Connect to the MQTT Server.
+	err2 := cli.Connect(&client.ConnectOptions{
+		Network:  "tcp",
+		Address: common.IpMosquitoServ,
+		ClientID: []byte("vm-client"),
+	})
+	if err2 != nil {
+		panic(err2)
+	}
+
+	/************************************
+				SENSOR 2
+	*************************************/
+	// Subscribe to topics.
+	err2 = cli.Subscribe(&client.SubscribeOptions{
+		SubReqs: []*client.SubReq{
+			&client.SubReq{
+				TopicFilter: []byte("sensor/hydro"),
+				QoS:         mqtt.QoS0,
+				// Define the processing of the message handler.
+				Handler: sensorDataHandlerHydro,
+			},
+		},
+	})
+	if err2 != nil {
+		panic(err2)
+	}
+
 	// Wait for receiving a signal.
 	<-sigc
 
+	/************************************
+				SENSOR 1
+	*************************************/
 	// Unsubscribe from topics.
 	err = cli.Unsubscribe(&client.UnsubscribeOptions{
 		TopicFilters: [][]byte{
-			[]byte("/temperature"),
+			[]byte("sensor/temp"),
 		},
 	})
 	if err != nil {
@@ -75,11 +115,28 @@ func main() {
 	if err := cli.Disconnect(); err != nil {
 		panic(err)
 	}
+
+	/************************************
+				SENSOR 2
+	*************************************/
+	err2 = cli.Unsubscribe(&client.UnsubscribeOptions{
+		TopicFilters: [][]byte{
+			[]byte("sensor/hydro"),
+		},
+	})
+	if err2 != nil {
+		panic(err2)
+	}
+
+	// Disconnect the Network Connection.
+	if err2 := cli.Disconnect(); err2 != nil {
+		panic(err2)
+	}
 }
 
 func sensorDataHandler(topicName, message []byte) {
 	fmt.Println(string(topicName), string(message))
-
+/*
 	// If the message publish on the good topic
 	if (string(topicName) != "/temperature") {
 		panic("wrong message")
@@ -116,4 +173,5 @@ func sensorDataHandler(topicName, message []byte) {
 
 	fmt.Println(res.Header)
 	fmt.Println(res.Body.ToString())
+*/
 }
