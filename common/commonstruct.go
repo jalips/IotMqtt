@@ -2,7 +2,7 @@ package common
 
 type SensorData struct {
 	Data string `json:"data"`
-	StatisticType string `json:"statisticType"`
+	StatisticType string `json:"type"`
 }
 
 type Sensor struct {

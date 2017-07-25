@@ -7,9 +7,8 @@ import (
 	"github.com/yosssi/gmq/mqtt"
 	"github.com/yosssi/gmq/mqtt/client"
 	"github.com/franela/goreq"
-	"github.com/jalips/IotMqtt/common"
-	//"time"
 	"encoding/json"
+	"github.com/jalips/IotMqtt/common"
 )
 
 /**
